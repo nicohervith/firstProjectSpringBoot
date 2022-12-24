@@ -1,8 +1,11 @@
 package com.ejemplo.SpringBoot.Controller;
 
 import com.ejemplo.SpringBoot.model.Persona;
+import com.ejemplo.SpringBoot.service.IPersonaService;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,38 +22,28 @@ public class Controller {
     
     //Enviar información
     //@Post
-
-    List<Persona> listaPersonas = new ArrayList();
     
-    @GetMapping("/hola/{nombre}/{apellido}/{edad}")
-    public String decirHola(@PathVariable String nombre,
-            @PathVariable String apellido,
-            @PathVariable int edad){
-        return "Hola Mundo " + nombre + " apellido "
-                + apellido + " edad: " + edad;
-    }
-    
-    @GetMapping("/chau")
-    //RequestParam me permite recibir el nombre
-    //Sin agregar las rutas
-    public String decirChau(@RequestParam String nombre,
-            @RequestParam String apellido,
-            @RequestParam int edad){
-        return "Chau mundo " + nombre + " apellido: " + 
-                apellido + " edad: " + edad;
-    }
+    @Autowired
+    private IPersonaService persoServ;
     
     @PostMapping("/new/persona")
     //RequesBody permite traer la persona
     //en el cuerpo de la solicitud en un json
     public void agregarPersona(@RequestBody Persona perso){
-        listaPersonas.add(perso);
+        //listaPersonas.add(perso);
+        persoServ.crearPersona(perso);
     }
     
     @GetMapping("/ver/personas")
     @ResponseBody
     //Para ver el json de la lista de personas
     public List<Persona> verPersonas(){
-        return listaPersonas;
+        //return listaPersonas;
+        return persoServ.verPersonas();
+    }
+    
+    @DeleteMapping("/delete/{id}")
+    public void borrarPersona(@PathVariable Long id){
+        persoServ.borrarPersona(id);
     }
 }
